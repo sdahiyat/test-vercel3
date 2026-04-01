@@ -1,34 +1,33 @@
 import OpenAI from 'openai'
 
 export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.OPENAI_API_KEY,
 })
 
-export async function analyzePhoto(imageUrl: string) {
+export async function analyzePhoto(imageUrl: string, prompt: string = "Analyze this photo and provide constructive feedback") {
   try {
     const response = await openai.chat.completions.create({
-      model: 'gpt-4-vision-preview',
+      model: "gpt-4-vision-preview",
       messages: [
         {
-          role: 'user',
+          role: "user",
           content: [
+            { type: "text", text: prompt },
             {
-              type: 'text',
-              text: 'Analyze this photograph and provide constructive feedback on composition, lighting, and technical aspects. Also suggest 3-5 relevant tags.'
+              type: "image_url",
+              image_url: {
+                url: imageUrl,
+              },
             },
-            {
-              type: 'image_url',
-              image_url: { url: imageUrl }
-            }
-          ]
-        }
+          ],
+        },
       ],
-      max_tokens: 500
+      max_tokens: 300,
     })
 
-    return response.choices[0]?.message?.content || 'Unable to analyze image'
+    return response.choices[0]?.message?.content || "No analysis available"
   } catch (error) {
-    console.error('OpenAI analysis error:', error)
+    console.error('Error analyzing photo:', error)
     throw new Error('Failed to analyze photo')
   }
 }
