@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'PhotoBuddy - AI Photo Sharing for Photographers',
-  description: 'Share photos and get AI-powered feedback, editing suggestions, and connect with fellow photographers.',
+  description: 'Share your photos and get AI-powered feedback, editing suggestions, and connect with other photographers.',
 }
 
 export default function RootLayout({
