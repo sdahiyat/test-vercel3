@@ -22,6 +22,15 @@ jobs:
         if: env.HAS_VERCEL == 'true'
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} --cwd project/
 
+      - name: Link to provisioned Vercel project
+        if: env.HAS_VERCEL == 'true'
+        env:
+          ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          mkdir -p project/.vercel
+          printf '{"orgId":"%s","projectId":"%s"}' "$ORG_ID" "$PROJECT_ID" > project/.vercel/project.json
+
       - name: Build project
         if: env.HAS_VERCEL == 'true'
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }} --cwd project/
