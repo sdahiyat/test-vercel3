@@ -8,19 +8,24 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ secrets.VERCEL_TOKEN != '' }}
+    env:
+      HAS_VERCEL: ${{ secrets.VERCEL_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Vercel CLI
+        if: env.HAS_VERCEL == 'true'
         run: npm install --global vercel@latest
 
       - name: Pull Vercel environment
+        if: env.HAS_VERCEL == 'true'
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} --cwd project/
 
       - name: Build project
+        if: env.HAS_VERCEL == 'true'
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }} --cwd project/
 
       - name: Deploy to Vercel
+        if: env.HAS_VERCEL == 'true'
         id: deploy
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --cwd project/
